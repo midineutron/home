@@ -1,4 +1,9 @@
 import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
+import {GlitchPass} from 'three/examples/jsm/postprocessing/GlitchPass';
+import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass.js';
+
 import { SceneObj } from './SceneList';
 import Scene from './Scene';
 
@@ -51,6 +56,7 @@ class SceneManager {
     TABLET: 1024,
     DESKTOP: 1440
   } as const;
+  composer: EffectComposer;
 
   constructor(sceneList: SceneObj[]) {
     this.clock = new THREE.Clock(); // For deltaTime calculation
@@ -61,6 +67,8 @@ class SceneManager {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setClearColor(0x000000); // Start with black background
     document.getElementById('container')?.appendChild(this.renderer.domElement);
+
+
     this.scenes = {}; // Map scene names to Scene objects
     this.sceneList = sceneList;
     this.activeScene = this.sceneList[0].scene;
@@ -71,6 +79,18 @@ class SceneManager {
     });
 
     window.addEventListener('resize', this.handleResize.bind(this));
+
+    this.composer = new EffectComposer(this.renderer);
+    const filmPass = new FilmPass(
+      1,   // intensity
+      false,  // grayscale
+    );
+    const renderPass = new RenderPass(this.activeScene.getThreeScene(), this.camera);
+    const glitchPass = new GlitchPass(1);
+    this.composer.addPass(renderPass);
+    this.composer.addPass(glitchPass);
+    this.composer.addPass(filmPass);
+        
   }
 
   private getDeviceType(): string {
@@ -102,6 +122,7 @@ class SceneManager {
     this.updateCameraPosition();
 
     // Update renderer size
+    this.composer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
@@ -115,7 +136,9 @@ class SceneManager {
     if (this.activeScene) {
       this.activeScene.update(deltaTime, undefined); // Delegate the update to the active Scene
     }
-    this.renderer.render(this.activeScene.getThreeScene(), this.camera)
+
+
+    this.composer.render(deltaTime)
 
   }
 
