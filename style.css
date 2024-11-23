@@ -1,0 +1,69 @@
+/* Apply basic styles to the body and ensure no scrolling */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+/* The container should take up the entire screen */
+#container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+}
+
+/* Style the Three.js canvas to fill the entire container */
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* Controls floating over the canvas, fixed at the bottom */
+.controls {
+  position: absolute;
+  bottom: 20px; /* Distance from the bottom */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
+  display: flex;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  padding: 10px;
+  border-radius: 10px;
+  z-index: 10; /* Ensure it floats above the canvas */
+}
+
+/* Buttons styling for desktop and mobile */
+.controls button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px; /* Base font size */
+}
+
+/* Hover state on desktop */
+.controls button:hover {
+  background-color: #555;
+}
+
+/* Responsive styling for smaller screens (mobile) */
+@media (max-width: 600px) {
+  .controls {
+    bottom: 10px; /* Adjust to reduce space on smaller screens */
+    padding: 5px;
+  }
+
+  .controls button {
+    margin: 0 5px;
+    padding: 8px 16px; /* Slightly smaller padding for mobile */
+    font-size: 14px;    /* Reduce font size for mobile */
+  }
+}
