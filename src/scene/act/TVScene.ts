@@ -58,6 +58,7 @@ class TvScene extends Scene {
     video.load();
     video.muted = true;
     video.loop = true;
+    video.playsInline = true;
 
     // Play the video when loaded
     video.play().catch((error) => console.error('Video playback failed:', error));
