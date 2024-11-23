@@ -23,7 +23,7 @@ class TvScene extends Scene {
     this.addLight(directionalLight);
 
     // Create a rotating cube as an example object in the intro scene
-    this.videoSrc = '/video/intro2.mp4';
+    this.videoSrc = '/home/video/intro2.mp4';
     this.setup();
   }
 
@@ -48,7 +48,7 @@ class TvScene extends Scene {
   }
 
   async setupTv() {
-    const tv = await this.loadGLBModel('tv', '/models/tv.glb', '');
+    const tv = await this.loadGLBModel('tv', '/home/models/tv.glb', '');
     tv.model.rotation.y = Math.PI;
     tv.model.position.set(0, 0, 7.5); // Start far away on the z-axis
     // video
