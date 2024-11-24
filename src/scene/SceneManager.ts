@@ -3,17 +3,12 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
 import { GlitchPass } from './CustomGlitchPass/CustomGlitchPass';
 import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass.js';
-import {DotScreenPass} from 'three/examples/jsm/postprocessing/DotScreenPass';
 import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+// User defined
 import { SceneObj } from './SceneList';
 import Scene from './Scene';
-
-// Add this interface at the file level
-interface CameraConfig {
-  distance: number;
-  height: number;
-  fov: number;
-}
+import { CAMERA_CONFIGS } from '../common/constants/CameraConfig';
+import { BREAKPOINTS } from '../common/constants/BreakPoints';
 
 
 class SceneManager {
@@ -27,65 +22,34 @@ class SceneManager {
   crossfadeFactor!: number | 1;
   currentScene: any;
   transitionSpeed!: number | 1;
-
-  // Add these constants at the class level
-  static readonly CAMERA_CONFIGS: { [key: string]: CameraConfig } = {
-    mobile: {
-      distance: 20,
-      height: 6,
-      fov: 75
-    },
-    tablet: {
-      distance: 17,
-      height: 5,
-      fov: 70
-    },
-    desktop: {
-      distance: 16,
-      height: 4.5,
-      fov: 65
-    },
-    ultrawide: {
-      distance: 18,
-      height: 5,
-      fov: 60
-    }
-  } as const;
-
-  static readonly BREAKPOINTS = {
-    MOBILE: 768,
-    TABLET: 1024,
-    DESKTOP: 1440
-  } as const;
   composer: EffectComposer;
 
   constructor(sceneList: SceneObj[]) {
     this.clock = new THREE.Clock(); // For deltaTime calculation
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.updateCameraPosition();
-    // Renderer, camera, and light setup
+    // Renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setClearColor(0x000000); // Start with black background
     document.getElementById('container')?.appendChild(this.renderer.domElement);
-
-
+    // Scenes
     this.scenes = {}; // Map scene names to Scene objects
     this.sceneList = sceneList;
     this.activeScene = this.sceneList[0].scene;
-    // Initialize scenes from the scenesList
-    sceneList.forEach(({ name, scene }: SceneObj) => {
+    sceneList.forEach(({ name, scene }: SceneObj) => { // Initialize scenes from the scenesList
       this.scenes[name] = scene;
       scene.setCamera(this.camera);
     });
-
-    window.addEventListener('resize', this.handleResize.bind(this));
-
+    // Composer
     this.composer = new EffectComposer(this.renderer);
-    const filmPass = new FilmPass(
-      3,   // intensity
-      false,  // grayscale
-    );
+    this.setupComposer();
+    // Resize
+    window.addEventListener('resize', this.handleResize.bind(this));
+  }
+
+  private setupComposer(): void {
+    const filmPass = new FilmPass(3, false);
     // const bloomPass = new BloomPass(1.5);
     const unrealBloomPass = new UnrealBloomPass(new THREE.Vector2(100, 100), 0.09, 1, 1);
     // const dotScreenPass = new DotScreenPass(new THREE.Vector2(0.00001, 0.00001));
@@ -100,16 +64,16 @@ class SceneManager {
 
   private getDeviceType(): string {
     const width = window.innerWidth;
-    if (width <= SceneManager.BREAKPOINTS.MOBILE) return 'mobile';
-    if (width <= SceneManager.BREAKPOINTS.TABLET) return 'tablet';
-    if (width <= SceneManager.BREAKPOINTS.DESKTOP) return 'desktop';
+    if (width <= BREAKPOINTS.MOBILE) return 'mobile';
+    if (width <= BREAKPOINTS.TABLET) return 'tablet';
+    if (width <= BREAKPOINTS.DESKTOP) return 'desktop';
     return 'ultrawide';
 }
 
   // Add these new methods
   private updateCameraPosition() {
     const deviceType = this.getDeviceType();
-    const config = SceneManager.CAMERA_CONFIGS[deviceType];
+    const config = CAMERA_CONFIGS[deviceType];
     
     // Update camera properties
     this.camera.position.set(0, config.height, config.distance);
@@ -141,16 +105,12 @@ class SceneManager {
     if (this.activeScene) {
       this.activeScene.update(deltaTime, undefined); // Delegate the update to the active Scene
     }
-
-
     this.composer.render(deltaTime)
-
   }
 
   getDeltaTime(): number {
     return this.clock.getDelta();
   }
-
 
   // Reset scenes (if needed)
   async resetScenes() {
