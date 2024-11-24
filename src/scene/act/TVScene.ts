@@ -15,10 +15,10 @@ class TvScene extends Scene {
     this.setBackgroundColor(0x000000);
 
     // Add lighting to the intro scene
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.010);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this.addLight(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.25);
     directionalLight.position.set(5, 10, 7.5);
     this.addLight(directionalLight);
 
@@ -77,12 +77,12 @@ class TvScene extends Scene {
   }
 
   setupSpotLight(target: THREE.Object3D) {
-    this.spotLight = new THREE.SpotLight(0xffffff, 12); // Increase intensity
+    this.spotLight = new THREE.SpotLight(0xffffff, 20); // Increase intensity
     this.spotLight.position.set(0, 40, -24); // Position the light above the TV
     this.spotLight.target = target; // Point the spotlight towards the TV
   
     // Adjust spotlight properties for better visibility
-    this.spotLight.angle = 0.5; // Narrower beam
+    this.spotLight.angle = 0.65; // Narrower beam
     this.spotLight.penumbra = 1; // Soft edges
     this.spotLight.decay = 0; // Make the light decay over distance
     this.spotLight.distance = 100; // Limit the light's reach

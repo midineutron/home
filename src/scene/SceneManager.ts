@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
-import {GlitchPass} from 'three/examples/jsm/postprocessing/GlitchPass';
+import { GlitchPass } from './CustomGlitchPass/CustomGlitchPass';
 import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass.js';
-
+import {DotScreenPass} from 'three/examples/jsm/postprocessing/DotScreenPass';
+import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 import { SceneObj } from './SceneList';
 import Scene from './Scene';
 
@@ -82,15 +83,19 @@ class SceneManager {
 
     this.composer = new EffectComposer(this.renderer);
     const filmPass = new FilmPass(
-      1,   // intensity
+      3,   // intensity
       false,  // grayscale
     );
+    // const bloomPass = new BloomPass(1.5);
+    const unrealBloomPass = new UnrealBloomPass(new THREE.Vector2(100, 100), 0.09, 1, 1);
+    // const dotScreenPass = new DotScreenPass(new THREE.Vector2(0.00001, 0.00001));
     const renderPass = new RenderPass(this.activeScene.getThreeScene(), this.camera);
-    const glitchPass = new GlitchPass(1);
+    const glitchPass = new GlitchPass(100);
     this.composer.addPass(renderPass);
-    this.composer.addPass(glitchPass);
+    this.composer.addPass(unrealBloomPass);
     this.composer.addPass(filmPass);
-        
+    this.composer.addPass(glitchPass);
+    // this.composer.addPass(dotScreenPass);
   }
 
   private getDeviceType(): string {
