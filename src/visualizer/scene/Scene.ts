@@ -1,22 +1,27 @@
-import * as THREE from 'three';
+import { AnimationAction, AnimationClip, AnimationMixer, 
+  BoxGeometry, Camera, Color, ColorRepresentation, 
+  Scene as ThreeScene, Light,
+  Group, Mesh, MeshBasicMaterial, Object3DEventMap } from 'three';
+  
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 export interface GLTFObj {
   name: string,
-  model: THREE.Group | THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial, THREE.Object3DEventMap>,
-  actions: { [key:string] : THREE.AnimationAction },
-  mixer: THREE.AnimationMixer | null,
+  model: Group | Mesh<BoxGeometry, MeshBasicMaterial, Object3DEventMap>,
+  actions: { [key:string] : AnimationAction },
+  mixer: AnimationMixer | null,
 }
 
 export class Scene {
-  scene: THREE.Scene;
+  scene: ThreeScene;
   objects: GLTFObj[];
   loader: GLTFLoader;
-  lights: THREE.Light[];
-  camera: THREE.Camera | null;
+  lights: Light[];
+  camera: Camera | null;
+  background!: Color;
   
   constructor() {
-    this.scene = new THREE.Scene(); // Each scene instance gets its own Three.js scene
+    this.scene = new ThreeScene(); // Each scene instance gets its own Three.js scene
     this.objects = []; // Array to store objects added to the scene
     this.lights = []; // Array to store lights added to the scene
     this.camera = null;
@@ -39,8 +44,8 @@ export class Scene {
       
       // Set up animation mixer if the model contains animations
       if (gltf.animations.length > 0) {
-        obj.mixer = new THREE.AnimationMixer(obj.model);
-        gltf.animations.forEach((clip: THREE.AnimationClip) => {
+        obj.mixer = new AnimationMixer(obj.model);
+        gltf.animations.forEach((clip: AnimationClip) => {
           if (obj.mixer) obj.actions[clip.name] = obj.mixer.clipAction(clip);
         });
         if (obj.actions[actionName]) obj.actions[actionName].play();
@@ -54,7 +59,7 @@ export class Scene {
     });
   }
 
-  setCamera(camera: THREE.Camera | null) {
+  setCamera(camera: Camera | null) {
     this.camera = camera;
   }
 
@@ -63,9 +68,12 @@ export class Scene {
     this.objects.push(object);
     this.scene.add(object.model);
   }
+  add(model: Group<Object3DEventMap> | Mesh<BoxGeometry, MeshBasicMaterial, Object3DEventMap>) {
+    throw new Error('Method not implemented.');
+  }
 
   // Add light to the scene
-  addLight(light: THREE.Light) {
+  addLight(light: Light) {
     this.lights.push(light);
     this.scene.add(light);
   }
@@ -85,13 +93,17 @@ export class Scene {
   }
 
   // Set background color for the scene
-  setBackgroundColor(color: THREE.ColorRepresentation) {
-    this.scene.background = new THREE.Color(color);
+  setBackgroundColor(color: ColorRepresentation) {
+    this.scene.background = new Color(color);
   }
 
   // Get the Three.js scene for rendering
-  getThreeScene(): THREE.Scene {
+  getThreeScene(): Scene {
     return this.scene;
+  }
+
+  getThreeObjects(): GLTFObj[] {
+    return this.objects;
   }
 }
 

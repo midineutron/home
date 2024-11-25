@@ -6,22 +6,22 @@ interface CameraConfig {
 
 export const CAMERA_CONFIGS: { [key: string]: CameraConfig } = {
   mobile: {
-    distance: 20,
-    height: 6,
+    distance: 18,
+    height: 5,
     fov: 75
   },
   tablet: {
-    distance: 17,
+    distance: 16,
     height: 5,
     fov: 70
   },
   desktop: {
     distance: 16,
-    height: 4.5,
-    fov: 65
+    height: 5,
+    fov: 60
   },
   ultrawide: {
-    distance: 18,
+    distance: 16,
     height: 5,
     fov: 60
   }

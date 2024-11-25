@@ -1,4 +1,4 @@
-import TvScene from './act/TVScene';
+import TvScene from './act/TVScene.js';
 import Scene from './Scene.js';
 // Import other scene files as needed
 

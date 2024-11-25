@@ -1,4 +1,15 @@
-import * as THREE from 'three';
+import {
+  AmbientLight,
+  DirectionalLight,
+  LinearFilter,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  Object3DEventMap,
+  PlaneGeometry,
+  SpotLight,
+  VideoTexture
+} from 'three';
 
 
 import { Scene, GLTFObj } from "../Scene"; // Import the base Scene class
@@ -6,8 +17,8 @@ import { Scene, GLTFObj } from "../Scene"; // Import the base Scene class
 class TvScene extends Scene {
   tv: GLTFObj | undefined;
   videoSrc: string;
-  spotLight: THREE.SpotLight | undefined;
-  floor: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshStandardMaterial, THREE.Object3DEventMap> | undefined;
+  spotLight: SpotLight | undefined;
+  floor: Mesh<PlaneGeometry, MeshStandardMaterial, Object3DEventMap> | undefined;
   constructor() {
     super(); // Call the base Scene constructor
 
@@ -15,16 +26,15 @@ class TvScene extends Scene {
     this.setBackgroundColor(0x000000);
 
     // Add lighting to the intro scene
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new AmbientLight(0xffffff, 0.5);
     this.addLight(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.25);
+    const directionalLight = new DirectionalLight(0xffffff, 1.25);
     directionalLight.position.set(5, 10, 7.5);
     this.addLight(directionalLight);
 
     // Create a rotating cube as an example object in the intro scene
     this.videoSrc = '/video/intro2.mp4';
-    this.setup();
   }
 
   async setup() {
@@ -35,9 +45,9 @@ class TvScene extends Scene {
 
   setupFloor() {
     // Create the floor
-    const floorGeometry = new THREE.PlaneGeometry(300, 300); // 50x50 plane
-    const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 }); // Gray color
-    this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    const floorGeometry = new PlaneGeometry(300, 300); // 50x50 plane
+    const floorMaterial = new MeshStandardMaterial({ color: 0x000000 }); // Gray color
+    this.floor = new Mesh(floorGeometry, floorMaterial);
 
     // Position the floor below the TV
     this.floor.rotation.x = -Math.PI / 2; // Rotate the plane to be horizontal
@@ -63,9 +73,9 @@ class TvScene extends Scene {
     // Play the video when loaded
     video.play().catch((error) => console.error('Video playback failed:', error));
 
-    const videoTexture = new THREE.VideoTexture(video);
-    videoTexture.minFilter = THREE.LinearFilter;
-    videoTexture.magFilter = THREE.LinearFilter;
+    const videoTexture = new VideoTexture(video);
+    videoTexture.minFilter = LinearFilter;
+    videoTexture.magFilter = LinearFilter;
     videoTexture.rotation = Math.PI;
     videoTexture.center.set(0.5, 0.5);  // Rotate around the center of the texture
 
@@ -76,17 +86,17 @@ class TvScene extends Scene {
     return tv;
   }
 
-  setupSpotLight(target: THREE.Object3D) {
-    this.spotLight = new THREE.SpotLight(0xffffff, 20); // Increase intensity
+  setupSpotLight(target: Object3D) {
+    this.spotLight = new SpotLight(0xffffff, 20); // Increase intensity
     this.spotLight.position.set(0, 40, -24); // Position the light above the TV
     this.spotLight.target = target; // Point the spotlight towards the TV
-  
+
     // Adjust spotlight properties for better visibility
     this.spotLight.angle = 0.65; // Narrower beam
     this.spotLight.penumbra = 1; // Soft edges
     this.spotLight.decay = 0; // Make the light decay over distance
     this.spotLight.distance = 100; // Limit the light's reach
-  
+
     // Add spotlight and target to the scene
     this.scene.add(this.spotLight);
     this.scene.add(this.spotLight.target);

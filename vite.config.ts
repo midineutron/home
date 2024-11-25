@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import path from 'path';
+import { output } from 'three/webgpu';
 
 export default defineConfig({
   base: '',
@@ -10,5 +11,14 @@ export default defineConfig({
   },
   server: {
     open: true,  // Automatically open the app in the browser
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three']
+        }
+      }
+    }
   }
 });
