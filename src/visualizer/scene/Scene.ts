@@ -98,7 +98,7 @@ export class Scene {
   }
 
   // Get the Three.js scene for rendering
-  getThreeScene(): Scene {
+  getThreeScene(): ThreeScene {
     return this.scene;
   }
 

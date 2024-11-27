@@ -49,7 +49,7 @@ class SceneManager {
   }
 
   private setupComposer(): void {
-    const filmPass = new FilmPass(2.25, false);
+    const filmPass = new FilmPass(1.25, false);
     // const bloomPass = new BloomPass(1.5);
     const unrealBloomPass = new UnrealBloomPass(new Vector2(100, 100), 0.09, 1, 1);
     const renderPass = new RenderPass(this.activeScene.getThreeScene(), this.camera);

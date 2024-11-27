@@ -34,7 +34,7 @@ class TvScene extends Scene {
     this.addLight(directionalLight);
 
     // Create a rotating cube as an example object in the intro scene
-    this.videoSrc = '/video/intro2.mp4';
+    this.videoSrc = '/video/IDP-00-web1.mp4';
   }
 
   async setup() {
