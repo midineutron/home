@@ -1,0 +1,1 @@
+import{V as n}from"./Visualizer-C4Qb0c-U.js";import"./three-MbgGJel_.js";let e=null;window.addEventListener("load",async()=>{e=new n,await e.setup()});window.addEventListener("resize",()=>{e&&(e.sceneManager.renderer.setSize(window.innerWidth,window.innerHeight),e.sceneManager.camera.aspect=window.innerWidth/window.innerHeight,e.sceneManager.camera.updateProjectionMatrix())});
