@@ -6,6 +6,7 @@ const cardList: { [key: string]: CardData } = {
     links: [
       { text: 'OPEN CALL', url: 'https://docs.google.com/forms/d/e/1FAIpQLSdzo1lmF7smd4cPE2YneNMzwvvgpDSgeWniHdU9JLU85TNOfA/viewform' },
       { text: 'CONVERSATION - 8 Ball Underground Sessions', url: 'https://www.youtube.com/watch?v=04tTAJXzHwM' },
+      { text: 'ELECTRIC SUNSHINE NYC', url: 'https://eryngii.art/electric-sunshine-nycWS'},
       { text: 'Artists', url: '#artists' }
     ]
   },
